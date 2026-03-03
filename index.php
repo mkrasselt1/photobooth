@@ -99,6 +99,12 @@ if ($config['ui']['selfie_mode']) {
 <script src="<?=$assetService->getUrl('resources/js/preview.js')?>"></script>
 <script src="<?=$assetService->getUrl('resources/js/virtualKeyboard.js')?>"></script>
     <script src="<?=$assetService->getUrl('resources/js/screensaver.js')?>"></script>
+<?php if (!empty($config['coinacceptor']['enabled'])): ?>
+<?php if (!$remoteBuzzer): ?>
+    <script src="<?=$assetService->getUrl('node_modules/socket.io-client/dist/socket.io.min.js')?>"></script>
+<?php endif; ?>
+    <script src="<?=$assetService->getUrl('resources/js/coinacceptor-client.js')?>"></script>
+<?php endif; ?>
     <script src="<?=$assetService->getUrl('resources/js/core.js')?>"></script>
 
 <?php include PathUtility::getAbsolutePath('template/components/start.adminshortcut.php'); ?>

@@ -1225,6 +1225,10 @@ const photoBooth = (function () {
             event.preventDefault();
             event.stopPropagation();
 
+            if (window.coinAcceptorGate && !(await window.coinAcceptorGate.checkPrint())) {
+                return;
+            }
+
             const copies = config.print.max_multi === 1 ? 1 : await photoboothTools.askCopies();
 
             if (copies && !isNaN(copies)) {
@@ -1514,14 +1518,20 @@ const photoBooth = (function () {
         rotaryController.focusSet(filternav);
     });
 
-    $('.takePic, .newpic').on('click', function (e) {
+    $('.takePic, .newpic').on('click', async function (e) {
         e.preventDefault();
+        if (window.coinAcceptorGate && !(await window.coinAcceptorGate.checkPicture())) {
+            return;
+        }
         api.thrill(PhotoStyle.PHOTO);
         $(this).trigger('blur');
     });
 
-    $('.takeCollage, .newcollage').on('click', function (e) {
+    $('.takeCollage, .newcollage').on('click', async function (e) {
         e.preventDefault();
+        if (window.coinAcceptorGate && !(await window.coinAcceptorGate.checkPicture())) {
+            return;
+        }
         if (config.collage.enabled && config.collage.allow_selection && $('#collageSelectorModal').length) {
             $('#collageSelectorModal').data('pending-start', true);
             $('#collageSelectorModal').removeClass('hidden').attr('aria-hidden', 'false');
@@ -1532,8 +1542,11 @@ const photoBooth = (function () {
         $(this).trigger('blur');
     });
 
-    $('.takeCustom, .newcustom').on('click', function (e) {
+    $('.takeCustom, .newcustom').on('click', async function (e) {
         e.preventDefault();
+        if (window.coinAcceptorGate && !(await window.coinAcceptorGate.checkPicture())) {
+            return;
+        }
         api.thrill(PhotoStyle.CUSTOM);
         $(this).trigger('blur');
     });

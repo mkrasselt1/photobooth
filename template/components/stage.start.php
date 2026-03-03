@@ -69,4 +69,16 @@ if ($screensaverMode === 'image' && $screensaverImageSource) {
         <div id="screensaver-text-bottom" class="screensaver-overlay__text screensaver-overlay__text--bottom"></div>
     </div>
     <?php include PathUtility::getAbsolutePath('template/components/github-corner.php'); ?>
+<?php if (!empty($config['coinacceptor']['enabled'])): ?>
+    <div id="coin-credits-display" class="coin-credits-display" style="display:none;">
+        <span class="coin-credits-display__label"></span>
+        <span id="coin-credits-value" class="coin-credits-display__value">0</span>
+    </div>
+    <div id="coin-insert-overlay" class="coin-insert-overlay" style="display:none;" aria-hidden="true">
+        <div class="coin-insert-overlay__content">
+            <p id="coin-overlay-msg" class="coin-insert-overlay__msg"></p>
+            <p id="coin-overlay-credits" class="coin-insert-overlay__credits"></p>
+        </div>
+    </div>
+<?php endif; ?>
 </div>

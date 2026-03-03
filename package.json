@@ -7,7 +7,7 @@
     "npm": ">=9.6.5"
   },
   "scripts": {
-    "build": "npm-run-all --serial composer:install format build:gulp build:head clean:skipwelcome",
+    "build": "npm-run-all --serial format composer:install format build:gulp build:head clean:skipwelcome",
     "build:gulp": "gulp",
     "build:head": "git log --format=\"%h %s\" -n 20 > HEAD",
     "build:sass": "gulp sass",
@@ -72,6 +72,7 @@
     "photoswipe": "^5.4.4",
     "postcss": "^8.5.6",
     "sass": "^1.97.3",
+    "serialport": "^12.0.0",
     "socket.io": "^4.8.3",
     "socket.io-client": "^4.8.3",
     "tailwindcss": "^4.1.18"

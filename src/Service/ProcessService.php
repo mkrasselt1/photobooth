@@ -28,6 +28,12 @@ class ProcessService
                 'command' => $config['commands']['nodebin'] . ' ' . PathUtility::getAbsolutePath('resources/js/sync-to-drive.js'),
                 'enabled' => ($config['synctodrive']['enabled']),
                 'killSignal' => 15,
+            ]),
+            ProcessFactory::fromConfig([
+                'name' => 'coinacceptor',
+                'command' => $config['commands']['nodebin'] . ' ' . PathUtility::getAbsolutePath('resources/js/coinacceptor-server.js'),
+                'enabled' => ($config['coinacceptor']['enabled']),
+                'killSignal' => 15,
             ])
         ];
     }

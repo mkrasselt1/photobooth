@@ -35,6 +35,7 @@ use Photobooth\Configuration\Section\QrConfiguration;
 use Photobooth\Configuration\Section\QualityConfiguration;
 use Photobooth\Configuration\Section\ReloadConfiguration;
 use Photobooth\Configuration\Section\RembgConfiguration;
+use Photobooth\Configuration\Section\CoinAcceptorConfiguration;
 use Photobooth\Configuration\Section\RemoteBuzzerConfiguration;
 use Photobooth\Configuration\Section\SlideshowConfiguration;
 use Photobooth\Configuration\Section\SoundConfiguration;
@@ -107,6 +108,7 @@ class PhotoboothConfiguration implements ConfigurationInterface
                 ->append(SoundConfiguration::getNode())
                 ->append(RembgConfiguration::getNode())
                 ->append(ThemeConfiguration::getNode())
+                ->append(CoinAcceptorConfiguration::getNode())
             ->end();
 
         return $treeBuilder;
