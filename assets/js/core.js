@@ -86,6 +86,7 @@ const photoBooth = (function () {
         imgFilter = config.filters.defaults,
         isProcessingEffects = false,
         command,
+        preCaptureRequest = null,
         startTime,
         endTime,
         totalTime;
@@ -245,7 +246,7 @@ const photoBooth = (function () {
                 api.countdown.audioElement = null;
             }
         },
-        start: (seconds) => {
+        start: (seconds, onSecond = null) => {
             photoboothTools.console.log('Countdown started. Set to ' + seconds + ' seconds.');
             api.countdown.create();
 
@@ -289,6 +290,10 @@ const photoBooth = (function () {
                         if (remainingSeconds === stop && !config.preview.camTakesPic) {
                             photoboothTools.console.logDev('Preview: core: stopping preview at countdown.');
                             photoboothPreview.stopPreview();
+                        }
+
+                        if (onSecond) {
+                            onSecond(remainingSeconds);
                         }
 
                         // after 1 is faded out, on second 0
@@ -594,7 +599,37 @@ const photoBooth = (function () {
             photoboothTools.getRequest(getUrl);
         }
 
-        await api.countdown.start(countdownTime);
+        const preCaptureTime = parseInt(config.picture.pre_capture_time, 10) || 0;
+        const preCaptureCallback =
+            preCaptureTime > 0 && !config.preview.camTakesPic
+                ? (remainingSeconds) => {
+                      if (remainingSeconds === preCaptureTime && preCaptureRequest === null) {
+                          photoboothTools.console.logDev('Pre-capture: firing capture.php at ' + remainingSeconds + 's remaining.');
+                          api.stopPreviewAndCaptureFromVideo();
+                          const data = {
+                              filter: imgFilter,
+                              style: api.photoStyle,
+                              canvasimg: videoSensor.get(0).toDataURL('image/jpeg')
+                          };
+                          if (api.photoStyle === PhotoStyle.COLLAGE) {
+                              data.file = currentCollageFile;
+                              data.collageNumber = api.nextCollageNumber;
+                              data.collageLimit = api.collageLimit;
+                          }
+                          if (api.photoStyle === PhotoStyle.CHROMA) {
+                              data.file = chromaFile;
+                          }
+                          loader.css('--stage-background', 'var(--background-countdown-color)');
+                          preCaptureRequest = jQuery.post({
+                              url: environment.publicFolders.api + '/capture.php',
+                              data: data,
+                              timeout: 25000
+                          });
+                      }
+                  }
+                : null;
+
+        await api.countdown.start(countdownTime, preCaptureCallback);
         await api.cheese.start();
 
         if (config.preview.camTakesPic && !photoboothPreview.stream && !config.dev.demo_images) {
@@ -619,7 +654,9 @@ const photoBooth = (function () {
     api.takePic = function (retry) {
         remoteBuzzerClient.inProgress('in-progress');
 
-        api.stopPreviewAndCaptureFromVideo();
+        if (!preCaptureRequest) {
+            api.stopPreviewAndCaptureFromVideo();
+        }
 
         const data = {
             filter: imgFilter,
@@ -657,12 +694,13 @@ const photoBooth = (function () {
     api.callTakePicApi = async (data, retry = 0) => {
         startTime = new Date().getTime();
         photoboothTools.console.logDev('Capture image.');
-        jQuery
-            .post({
-                url: environment.publicFolders.api + '/capture.php',
-                data: data,
-                timeout: 25000
-            })
+        const request = preCaptureRequest || jQuery.post({
+            url: environment.publicFolders.api + '/capture.php',
+            data: data,
+            timeout: 25000
+        });
+        preCaptureRequest = null;
+        request
             .done(async (result) => {
                 api.cheese.destroy();
                 if (config.ui.shutter_animation) {

@@ -652,6 +652,17 @@ return [
             'range_step' => 250,
             'unit' => 'milliseconds',
         ],
+        'picture_pre_capture_time' => [
+            'view' => 'expert',
+            'type' => 'range',
+            'placeholder' => $defaultConfig['picture']['pre_capture_time'],
+            'name' => 'picture[pre_capture_time]',
+            'value' => $config['picture']['pre_capture_time'],
+            'range_min' => 0,
+            'range_max' => 10,
+            'range_step' => 1,
+            'unit' => 'seconds',
+        ],
         'picture_flip' => [
             'view' => 'advanced',
             'type' => 'select',

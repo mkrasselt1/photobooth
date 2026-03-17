@@ -24,7 +24,6 @@ $rateLimitMax    = 10;
 $processor = null;
 $linecount = 0;
 $data = [];
-
 try {
     $incomingToken = $_GET[$csrfKey] ?? '';
     if (!hash_equals((string)$csrfToken, (string)$incomingToken)) {
